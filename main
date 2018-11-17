@@ -1,0 +1,62 @@
+import pygame
+import time
+
+#--------------------------
+pygame.init()
+clock = pygame.time.Clock()
+
+screen_height = 500
+screen_width = 500
+
+side_x = screen_width / 5
+side_y = screen_height / 5
+
+size = [screen_width, screen_height]
+screen = pygame.display.set_mode(size)
+
+pygame.display.set_caption("Tower Defense 1.0")
+
+BLACK = [0, 0, 0]
+WHITE = [255, 255, 255]
+GREEN = [32, 58, 39]
+GRAY = [128, 128, 128]
+RED = [255, 0, 0]
+YELLOW = [247, 242, 26]
+
+field = [[1, 1, 1, 1, 4],
+         [1, 2, 0, 0, 0],
+         [1, 1, 1, 1, 0],
+         [0, 0, 2, 1, 0],
+         [3, 1, 1, 1, 0]]#where 0 - ground 1 - road 2 - place for turret 3 - start 4 - finish
+#--------------------------
+
+done = False
+
+while not done:
+    for i in pygame.event.get():
+        if i.type == pygame.QUIT: done = True
+
+    
+    screen.fill((255,255,255))
+
+    for y in range(0, 5):
+        for x in range(0, 5):
+            if field[y][x] == 0:
+                colorr = GREEN
+            elif field[y][x] == 1:
+                colorr = GRAY
+            elif field[y][x] == 2:
+                colorr = BLACK
+            elif field[y][x] == 3:
+                colorr = RED
+            else:
+                colorr = YELLOW
+                
+            
+            pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
+    
+    pygame.display.flip()
+    clock.tick(10)
+
+print(field)
+pygame.quit()
