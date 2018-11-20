@@ -13,6 +13,7 @@ class Enemy:
         pygame.draw.rect(screen, WHITE, (self.x*side_x, self.y*side_y, side_x, side_y))
         pygame.draw.line(screen, RED, [self.x*side_x, self.y*side_y - 5], [self.x*side_x + (side_x / self.maxHP * self.hp), self.y*side_y - 5], 3)
 #--------------------------
+#technical variables
 pygame.init()
 clock = pygame.time.Clock()
 
@@ -41,8 +42,9 @@ screen.fill((0,250,154))
 
 flag = False
 
-fakeTimer = 60
-
+fakeTimer = 60 #with this timer we can drag icons without lags
+#--------------------------
+#description
 description1 = f1.render('Uhh, hello? You are playing in Tower Defense 1.0', 1, WHITE)
 screen.blit(description1, (100, 100))
 
@@ -115,7 +117,8 @@ while not flag:
         if i.type == pygame.MOUSEBUTTONUP:
             flag = True
 
-
+#--------------------------
+#game variables
 field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
          [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 0],
          [0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 1, 1, 1, 0, 0, 0, 0],
@@ -132,14 +135,14 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
          [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]#where 0 - ground 1 - road 2 - place for turret 3 - start 4 - finish 5 - turret(rocket)
-#--------------------------
+
 healths = 3
 money = 600
 level = 1
 
-isUpgradesIsDrawing = False
-upgradeCoords = [0, 0]
-deleteCoords = [0, 0]
+isUpgradesIsDrawing = False #if this variable is true, upgrade/delete icons is drawing under turret
+upgradeCoords = [0, 0] #coordinates of upgrade icon
+deleteCoords = [0, 0] #coordinates of delete icon
 
 maxEnemyHealts = 3
 
@@ -152,11 +155,11 @@ moves = [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
          [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
          [0, 1], [1, 0], [1, 0], [0, -1], [1, 0], [1, 0],
          [0, 1], [1, 0], [1, 0], [0, -1], [1, 0], [1, 0],
-         [1, 0], [0, -1], [1, 0]]
+         [1, 0], [0, -1], [1, 0]] #plus to enemies x and y steps (squares) from field
 
 turrets = []
 
-enemyCount = 5
+enemyCount = 5 #enemies on level
 
 enemies = []
 
@@ -164,15 +167,16 @@ enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
 
 enemyCount -= 1
 
-iterator = -1
+iterator = -1 #every loop this variable is increasing, when = 1, spawn the enemy (if enemyCount > 0) and reset to zero
 #--------------------------
 #section for turret pages
-pages = []
-pages.append([17 * side_x, 4 * side_y, False])
-pages.append([17 * side_x, 7 * side_y, False])
+pages = [] #2 pages, 2 icons of turrets
+pages.append([17 * side_x, 4 * side_y, False]) #icon of white turret
+pages.append([17 * side_x, 7 * side_y, False]) #icon of yellow turret
 
-pageIndex = 0
+pageIndex = 0 #white(=0) or yellow(=1) icon is moving
 #--------------------------
+#field draw
 for y in range(0, 16):
         for x in range(0, 20):
             if field[y][x] == 0:
@@ -190,6 +194,7 @@ for y in range(0, 16):
                 
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
 #--------------------------
+#game cycle
 done = False
 
 while not done:
@@ -243,6 +248,8 @@ while not done:
             if pages[pageIndex][2] == True:
                 pages[pageIndex][2] = False
 
+                #--------------------------
+                #add turret 
                 if field[pages[pageIndex][1]//side_y][pages[pageIndex][0]//side_x] == 2 and money >= 300:
                     field[pages[pageIndex][1]//side_y][pages[pageIndex][0]//side_x] = 5
 
@@ -252,7 +259,8 @@ while not done:
                         turrets.append([pages[pageIndex][0]//side_x, pages[pageIndex][1]//side_y, 0.3, YELLOW])
                         
                     money -= 300
-
+                #--------------------------
+                #return icon of the turret to the initial place
                     pages[pageIndex][0] = 17 * side_x
                     if pageIndex == 0:
                         pages[pageIndex][1] = 4 * side_y
@@ -264,8 +272,8 @@ while not done:
                         pages[pageIndex][1] = 4 * side_y
                     elif pageIndex == 1:
                         pages[pageIndex][1] = 7 * side_y
-                    
-
+                #--------------------------  
+        #icon moving
         elif i.type == pygame.MOUSEMOTION:
             if pages[pageIndex][2]== True:
                 pos = pygame.mouse.get_pos()
@@ -276,7 +284,8 @@ while not done:
             
     
     screen.fill((255,255,255))
-    
+    #--------------------------
+    #field draw
     for y in range(0, 16):
         for x in range(0, 20):
             if field[y][x] == 0:
@@ -303,7 +312,7 @@ while not done:
     pygame.draw.rect(screen, BLACK, (pages[1][0], pages[1][1], side_x, side_y))
     pygame.draw.circle(screen, YELLOW, (pages[1][0] + (side_x//2), pages[1][1] + (side_y//2)), (side_x//2), 1)
     #--------------------------
-
+    #draw turrets and enemies
     if fakeTimer == 0:
         for i in enemies:
             if i.turn <= len(moves)-1: 
@@ -349,7 +358,8 @@ while not done:
         i.draw()
     for i in turrets:
         pygame.draw.circle(screen, i[3], (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
-
+    #--------------------------
+    #upgrade/delete icons draw
     if isUpgradesIsDrawing == True:
         pygame.draw.rect(screen, WHITE, (upgradeCoords[0], upgradeCoords[1], side_x, side_y))
         pygame.draw.polygon(screen, BLACK, [[upgradeCoords[0] + side_x//10*4, upgradeCoords[1] + side_y//10*9],
@@ -365,7 +375,8 @@ while not done:
         pygame.draw.line(screen, RED, [deleteCoords[0]+side_x/7, deleteCoords[1]+side_y/7], [deleteCoords[0]+side_x/7*6, deleteCoords[1]+side_y/7*6], 3)
         pygame.draw.line(screen, RED, [deleteCoords[0]+side_x/7, deleteCoords[1]+side_y/7*6], [deleteCoords[0]+side_x/7*6, deleteCoords[1]+side_y/7], 3)
 
-        
+    #--------------------------
+    #money/level/healths draw
     moneyValue = f1.render('Money: '+ str(money), 1, WHITE)
     screen.blit(moneyValue, (0, 0))
 
@@ -374,7 +385,8 @@ while not done:
 
     healthsValue = f1.render('healths: '+ str(healths), 1, WHITE)
     screen.blit(healthsValue, (400, 0))
-
+    #--------------------------
+    #healths and timer
     if healths <= 0:
         done = True
         print("You lose")
@@ -384,7 +396,8 @@ while not done:
         fakeTimer = 60
     else:
         fakeTimer -= 1
-        
+    #--------------------------
+    #level switching
     if len(enemies) == 0 and level == 1:
         enemyCount += 6
         level += 1
@@ -412,7 +425,7 @@ while not done:
         level = "Victory!"
         print("You win!")
         done = True
-        
+    #--------------------------
     pygame.display.flip()
     clock.tick(60)
     
