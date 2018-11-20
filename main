@@ -70,8 +70,9 @@ description1 = f1.render('WHITE CIRCLE- TURRET', 1, WHITE)
 screen.blit(description1, (100 + side_x, 410))
 pygame.draw.circle(screen, WHITE, (100 + side_x//2, 400 + (side_y//2)), (side_x//2), 2)
 
-description1 = f1.render('Mm, that\'s all. Good luck, have fun!', 1, WHITE)
-screen.blit(description1, (100, 500))
+description1 = f1.render('YELLOW CIRCLE- TURRET TOO))', 1, YELLOW)
+screen.blit(description1, (100 + side_x, 470))
+pygame.draw.circle(screen, YELLOW, (100 + side_x//2, 460 + (side_y//2)), (side_x//2), 2)
 
 pygame.display.flip()
 
@@ -79,6 +80,41 @@ while not flag:
     for i in pygame.event.get():
         if i.type == pygame.MOUSEBUTTONUP:
             flag = True
+
+screen.fill((0,250,154))
+
+description1 = f1.render('Now a little about the gameplay:', 1, WHITE)
+screen.blit(description1, (100, 100))
+
+description1 = f1.render('To put a turret - click on it and drag it into place for the turret', 1, GREEN)
+screen.blit(description1, (100, 150))
+
+description1 = f1.render('To upgrade or remove turret - click on the turret', 1, GRAY)
+screen.blit(description1, (100, 200))
+
+description1 = f1.render('If you do not have enough money - click on the upgrade icon, nothing will happen', 1, BLACK)
+screen.blit(description1, (100, 250))
+
+description1 = f1.render('The cost of the turret is 300 coins, the upgrade is 500 coins. Upgrade gives + to damage', 1, RED)
+screen.blit(description1, (100, 300))
+
+description1 = f1.render('White turret shoots at one enemy, but has high damage', 1, YELLOW)
+screen.blit(description1, (100, 350))
+
+description1 = f1.render('The yellow turret shoots all enemies in its field of view, but has little damage', 1, YELLOW)
+screen.blit(description1, (100, 400))
+
+description1 = f1.render('Four levels and final boss. Good luck :)', 1, YELLOW)
+screen.blit(description1, (100, 450))
+
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
 
 field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
          [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 0],
@@ -97,7 +133,7 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
          [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]#where 0 - ground 1 - road 2 - place for turret 3 - start 4 - finish 5 - turret(rocket)
 #--------------------------
-healths = 5
+healths = 3
 money = 600
 level = 1
 
@@ -339,9 +375,9 @@ while not done:
     healthsValue = f1.render('healths: '+ str(healths), 1, WHITE)
     screen.blit(healthsValue, (400, 0))
 
-    #if healths <= 0:
-        #done = True
-        #print("You lose")
+    if healths <= 0:
+        done = True
+        print("You lose")
 
         
     if fakeTimer == 0:
