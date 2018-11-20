@@ -97,8 +97,12 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
          [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]]#where 0 - ground 1 - road 2 - place for turret 3 - start 4 - finish 5 - turret
 #--------------------------
 healths = 5
-money = 200
+money = 600
 level = 1
+
+isUpgradesIsDrawing = False
+upgradeCoords = [0, 0]
+deleteCoords = [0, 0]
 
 maxEnemyHealts = 3
 
@@ -163,10 +167,27 @@ while not done:
                 isPageMoving = True
 
             if field[y_cell][x_cell] == 5:
-                for i in turrets:
-                    if i[0] == x_cell and i[1] == y_cell:
-                        turrets.remove(i)
-                        field[y_cell][x_cell] = 2
+                
+                for i in range(0, len(turrets)):
+                    if turrets[i][0] == x_cell and turrets[i][1] == y_cell:
+                        isUpgradesIsDrawing = True
+                        upgradeCoords = [int((x_cell - 1)*side_x), int((y_cell + 1)*side_y)]
+                        deleteCoords = [(x_cell + 1)*side_x, (y_cell + 1)*side_y]
+                        turretIndex = i
+                        break
+
+            if x_cell*side_x == deleteCoords[0] and y_cell*side_y == deleteCoords[1] and isUpgradesIsDrawing == True:
+                turrets.pop(turretIndex)
+                field[y_cell-1][x_cell-1] = 2
+                isUpgradesIsDrawing = False
+            elif x_cell*side_x == upgradeCoords[0] and y_cell*side_y == upgradeCoords[1] and isUpgradesIsDrawing == True:
+                if money >= 300:
+                    turrets[turretIndex][2] += 1
+                    money -= 300
+                isUpgradesIsDrawing = False
+
+            
+                    
         
             
         elif i.type == pygame.MOUSEBUTTONUP:
@@ -177,10 +198,10 @@ while not done:
             if isPageMoving == True:
                 isPageMoving = False
 
-                if field[pageY//side_y][pageX//side_x] == 2 and money >= 100:
+                if field[pageY//side_y][pageX//side_x] == 2 and money >= 300:
                     field[pageY//side_y][pageX//side_x] = 5
                     turrets.append([pageX//side_x, pageY//side_y, 1])
-                    money -= 100
+                    money -= 300
                     pageX = 17 * side_x
                     pageY = 4 * side_y
                 else:
@@ -216,7 +237,11 @@ while not done:
                 
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
 
-    pygame.draw.rect(screen, WHITE, (pageX, pageY, side_x, side_y))
+    #--------------------------
+    #drawing turret drag-n-drop images
+    pygame.draw.rect(screen, BLACK, (pageX, pageY, side_x, side_y))
+    pygame.draw.circle(screen, WHITE, (pageX + (side_x//2), pageY + (side_y//2)), (side_x//2), 1)
+    #--------------------------
 
     if fakeTimer == 0:
         for i in enemies:
@@ -232,6 +257,7 @@ while not done:
             for j in enemies:
                 if abs(i[0] - j.x) <= 1 and abs(i[1] - j.y) <= 1:
                     j.hp -= i[2]
+                    
                     if j.hp <= 0:
                         enemies.remove(j)
                         money += 100
@@ -251,7 +277,22 @@ while not done:
     for i in turrets:
         pygame.draw.circle(screen, WHITE, (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
 
+    if isUpgradesIsDrawing == True:
+        pygame.draw.rect(screen, WHITE, (upgradeCoords[0], upgradeCoords[1], side_x, side_y))
+        pygame.draw.polygon(screen, BLACK, [[upgradeCoords[0] + side_x//10*4, upgradeCoords[1] + side_y//10*9],
+                                             [upgradeCoords[0] + side_x//10*6, upgradeCoords[1] + side_y//10*9],
+                                             [upgradeCoords[0] + side_x//10*6, upgradeCoords[1] + side_y//10*4],
+                                             [upgradeCoords[0] + side_x//10*8, upgradeCoords[1] + side_y//10*4],
+                                             [upgradeCoords[0] + side_x//10*5, upgradeCoords[1] + side_y//10*1],
+                                             [upgradeCoords[0] + side_x//10*2, upgradeCoords[1] + side_y//10*4],
+                                             [upgradeCoords[0] + side_x//10*4, upgradeCoords[1] + side_y//10*4],
+                                             [upgradeCoords[0] + side_x//10*4, upgradeCoords[1] + side_y//10*9]])
+        
+        pygame.draw.rect(screen, WHITE, (deleteCoords[0], deleteCoords[1], side_x, side_y))
+        pygame.draw.line(screen, RED, [deleteCoords[0]+side_x/7, deleteCoords[1]+side_y/7], [deleteCoords[0]+side_x/7*6, deleteCoords[1]+side_y/7*6], 3)
+        pygame.draw.line(screen, RED, [deleteCoords[0]+side_x/7, deleteCoords[1]+side_y/7*6], [deleteCoords[0]+side_x/7*6, deleteCoords[1]+side_y/7], 3)
 
+        
     moneyValue = f1.render('Money: '+ str(money), 1, WHITE)
     screen.blit(moneyValue, (0, 0))
 
