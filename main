@@ -2,14 +2,16 @@ import pygame
 import time
 
 class Enemy:
-    def __init__(self, x, y, hp, turn):
+    def __init__(self, x, y, maxHP, turn):
         self.x = x
         self.y = y
-        self.hp = hp
+        self.hp = maxHP
+        self.maxHP = maxHP
         self.turn = turn
 
     def draw(self):
         pygame.draw.rect(screen, WHITE, (self.x*side_x, self.y*side_y, side_x, side_y))
+        pygame.draw.line(screen, RED, [self.x*side_x, self.y*side_y - 5], [self.x*side_x + (side_x / self.maxHP * self.hp), self.y*side_y - 5], 3)
 #--------------------------
 pygame.init()
 clock = pygame.time.Clock()
@@ -37,6 +39,8 @@ YELLOW = [247, 242, 26]
 screen.fill((0,250,154))
 
 flag = False
+
+fakeTimer = 60
 
 description1 = f1.render('Uhh, hello? You are playing in Tower Defense 1.0', 1, WHITE)
 screen.blit(description1, (100, 100))
@@ -94,10 +98,13 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
 #--------------------------
 healths = 5
 money = 200
+level = 1
+
+maxEnemyHealts = 3
 
 start = [0, 15]#start coordinates
 
-moves = [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
+moves = [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
          [0, -1], [0, -1], [0, -1], [0, -1], [0, -1], [0, -1], [0, -1], [0, -1],
          [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0], [-1, 0],
          [0, -1], [0, -1], [0, -1], [0, -1], [0, -1], [0, -1],
@@ -108,13 +115,22 @@ moves = [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
 
 turrets = []
 
-enemies = []
-enemies.append(Enemy(start[0] + 1, start[1], 3, 0))
-enemies.append(Enemy(start[0] + 3, start[1], 3, 2))
-enemies.append(Enemy(start[0] + 5, start[1], 3, 4))
-enemies.append(Enemy(start[0] + 7, start[1], 3, 6))
-enemies.append(Enemy(start[0] + 9, start[1], 3, 8))
+enemyCount = 5
 
+enemies = []
+
+enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
+
+enemyCount -= 1
+
+iterator = -1
+#--------------------------
+#section for turret pages
+pageX = 17 * side_x
+pageY = 4 * side_y
+
+isPageMoving = False
+#--------------------------
 for y in range(0, 16):
         for x in range(0, 20):
             if field[y][x] == 0:
@@ -131,22 +147,55 @@ for y in range(0, 16):
                 colorr = BLACK
                 
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
-
+#--------------------------
 done = False
 
 while not done:
     for i in pygame.event.get():
         if i.type == pygame.QUIT: done = True
 
+        elif i.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            x_cell = int(pos[0]//side_x)
+            y_cell = int(pos[1]//side_y)
+            
+            if x_cell == pageX // side_x and y_cell == pageY // side_y:
+                isPageMoving = True
+
+            if field[y_cell][x_cell] == 5:
+                for i in turrets:
+                    if i[0] == x_cell and i[1] == y_cell:
+                        turrets.remove(i)
+                        field[y_cell][x_cell] = 2
+        
+            
         elif i.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             x_cell = int(pos[0]//side_x)
             y_cell = int(pos[1]//side_y)
 
-            if field[y_cell][x_cell] == 2 and money >= 100:
-                field[y_cell][x_cell] = 5
-                turrets.append([x_cell, y_cell])
-                money -= 100
+            if isPageMoving == True:
+                isPageMoving = False
+
+                if field[pageY//side_y][pageX//side_x] == 2 and money >= 100:
+                    field[pageY//side_y][pageX//side_x] = 5
+                    turrets.append([pageX//side_x, pageY//side_y, 1])
+                    money -= 100
+                    pageX = 17 * side_x
+                    pageY = 4 * side_y
+                else:
+                    pageX = 17 * side_x
+                    pageY = 4 * side_y
+                    
+
+        elif i.type == pygame.MOUSEMOTION:
+            if isPageMoving == True:
+                pos = pygame.mouse.get_pos()
+
+                pageX = int(pos[0])
+                pageY = int(pos[1])
+
+            
     
     screen.fill((255,255,255))
     
@@ -167,32 +216,79 @@ while not done:
                 
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
 
-    for i in enemies:
-        if i.turn <= len(moves)-1: 
-            i.x += moves[i.turn][0]
-            i.y += moves[i.turn][1]
-            i.draw()
-            i.turn += 1
-            if i.turn == len(moves) - 1:
-                healths -= 1
+    pygame.draw.rect(screen, WHITE, (pageX, pageY, side_x, side_y))
 
+    if fakeTimer == 0:
+        for i in enemies:
+            if i.turn <= len(moves)-1: 
+                i.x += moves[i.turn][0]
+                i.y += moves[i.turn][1]
+                i.turn += 1
+                if i.turn == len(moves) - 1:
+                    healths -= 1
+    
+        for i in turrets:
+            pygame.draw.circle(screen, WHITE, (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
+            for j in enemies:
+                if abs(i[0] - j.x) <= 1 and abs(i[1] - j.y) <= 1:
+                    j.hp -= i[2]
+                    if j.hp <= 0:
+                        enemies.remove(j)
+                        money += 100
+                    break
+
+        if iterator < 1:
+            iterator += 1
+        else:
+            iterator = 0
+
+            if enemyCount >= 1:
+                enemies.append(Enemy(start[0] + 1, start[1], maxEnemyHealts, 1))
+                enemyCount -= 1
+
+    for i in enemies:
+        i.draw()
     for i in turrets:
         pygame.draw.circle(screen, WHITE, (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
-        for j in enemies:
-            if abs(i[0] - j.x) <= 1 and abs(i[1] - j.y) <= 1:
-                j.hp -= 1
-                if j.hp <= 0:
-                    enemies.remove(j)
-                break
+
 
     moneyValue = f1.render('Money: '+ str(money), 1, WHITE)
     screen.blit(moneyValue, (0, 0))
 
-    if healths <= 0:
+    levelValue = f1.render('Level: '+ str(level), 1, WHITE)
+    screen.blit(levelValue, (200, 0))
+
+    healthsValue = f1.render('healths: '+ str(healths), 1, WHITE)
+    screen.blit(healthsValue, (400, 0))
+
+    #if healths <= 0:
+        #done = True
+        #print("You lose")
+
+        
+    if fakeTimer == 0:
+        fakeTimer = 60
+    else:
+        fakeTimer -= 1
+        
+    if len(enemies) == 0 and level == 1:
+        enemyCount += 6
+        level += 1
+        enemies.append(Enemy(start[0], start[1], 3, 0))
+        maxEnemyHealts = 5
+        iterator = -1
+    elif len(enemies) == 0 and level == 2:
+        enemyCount += 9
+        level += 1
+        enemies.append(Enemy(start[0], start[1], 3, 0))
+        maxEnemyHealts = 7
+        iterator = -1
+    elif len(enemies) == 0 and level == 3:
+        level = "Victory!"
+        print("You win!")
         done = True
-        print("You lose")
-    
+        
     pygame.display.flip()
-    clock.tick(1)
+    clock.tick(60)
     
 pygame.quit()
