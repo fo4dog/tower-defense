@@ -86,28 +86,28 @@ while not flag:
 screen.fill((0,250,154))
 
 description1 = f1.render('Now a little about the gameplay:', 1, WHITE)
-screen.blit(description1, (100, 100))
+screen.blit(description1, (10, 100))
 
 description1 = f1.render('To put a turret - click on it and drag it into place for the turret', 1, GREEN)
-screen.blit(description1, (100, 150))
+screen.blit(description1, (10, 150))
 
 description1 = f1.render('To upgrade or remove turret - click on the turret', 1, GRAY)
-screen.blit(description1, (100, 200))
+screen.blit(description1, (10, 200))
 
 description1 = f1.render('If you do not have enough money - click on the upgrade icon, nothing will happen', 1, BLACK)
-screen.blit(description1, (100, 250))
+screen.blit(description1, (10, 250))
 
-description1 = f1.render('The cost of the turret is 300 coins, the upgrade is 500 coins. Upgrade gives + to damage', 1, RED)
-screen.blit(description1, (100, 300))
+description1 = f1.render('The cost of the turret is 300 coins, upgrade - 500 coins. Upgrade gives + to damage', 1, RED)
+screen.blit(description1, (10, 300))
 
 description1 = f1.render('White turret shoots at one enemy, but has high damage', 1, YELLOW)
-screen.blit(description1, (100, 350))
+screen.blit(description1, (10, 350))
 
 description1 = f1.render('The yellow turret shoots all enemies in its field of view, but has little damage', 1, YELLOW)
-screen.blit(description1, (100, 400))
+screen.blit(description1, (10, 400))
 
-description1 = f1.render('Four levels and final boss. Good luck :)', 1, YELLOW)
-screen.blit(description1, (100, 450))
+description1 = f1.render('Four waves and final boss. Good luck :)', 1, YELLOW)
+screen.blit(description1, (10, 450))
 
 pygame.display.flip()
 
@@ -138,7 +138,7 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
 
 healths = 3
 money = 600
-level = 1
+wave = 1
 
 isUpgradesIsDrawing = False #if this variable is true, upgrade/delete icons is drawing under turret
 upgradeCoords = [0, 0] #coordinates of upgrade icon
@@ -159,7 +159,7 @@ moves = [[1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0], [1, 0],
 
 turrets = []
 
-enemyCount = 5 #enemies on level
+enemyCount = 5 #enemies on wave
 
 enemies = []
 
@@ -320,12 +320,19 @@ while not done:
                 i.y += moves[i.turn][1]
                 i.turn += 1
                 if i.turn == len(moves) - 1:
-                    healths -= 1
+                    if wave == 5:
+                        healths = 0
+                    else:
+                        healths -= 1
     
         for i in turrets:
             pygame.draw.circle(screen, i[3], (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
             for j in enemies:
-                if abs(i[0] - j.x) <= 1 and abs(i[1] - j.y) <= 1:
+                if i[3] == [255, 255, 255]:
+                    turretDamageRange = 1
+                else:
+                    turretDamageRange = 2
+                if abs(i[0] - j.x) <= turretDamageRange and abs(i[1] - j.y) <= turretDamageRange:
                     j.hp -= i[2]
 
                     if i[3] == [247, 242, 26]:
@@ -333,13 +340,13 @@ while not done:
                     
                     if j.hp <= 0:
                         enemies.remove(j)
-                        if level == 1:
+                        if wave == 1:
                             money += 100
-                        elif level == 2:
+                        elif wave == 2:
                             money += 120
-                        elif level == 3:
+                        elif wave == 3:
                             money += 150
-                        elif level == 4:
+                        elif wave == 4:
                             money += 200
                             
                     if i[3] == [255, 255, 255]:
@@ -376,12 +383,12 @@ while not done:
         pygame.draw.line(screen, RED, [deleteCoords[0]+side_x/7, deleteCoords[1]+side_y/7*6], [deleteCoords[0]+side_x/7*6, deleteCoords[1]+side_y/7], 3)
 
     #--------------------------
-    #money/level/healths draw
+    #money/wave/healths draw
     moneyValue = f1.render('Money: '+ str(money), 1, WHITE)
     screen.blit(moneyValue, (0, 0))
 
-    levelValue = f1.render('Level: '+ str(level), 1, WHITE)
-    screen.blit(levelValue, (200, 0))
+    waveValue = f1.render('wave: '+ str(wave), 1, WHITE)
+    screen.blit(waveValue, (200, 0))
 
     healthsValue = f1.render('healths: '+ str(healths), 1, WHITE)
     screen.blit(healthsValue, (400, 0))
@@ -397,32 +404,32 @@ while not done:
     else:
         fakeTimer -= 1
     #--------------------------
-    #level switching
-    if len(enemies) == 0 and level == 1:
+    #wave switching
+    if len(enemies) == 0 and wave == 1:
         enemyCount += 6
-        level += 1
+        wave += 1
         maxEnemyHealts = 5
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
         iterator = -1
-    elif len(enemies) == 0 and level == 2:
+    elif len(enemies) == 0 and wave == 2:
         enemyCount += 9
-        level += 1
+        wave += 1
         maxEnemyHealts = 8
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
         iterator = -1
-    elif len(enemies) == 0 and level == 3:
+    elif len(enemies) == 0 and wave == 3:
         enemyCount += 12
-        level += 1
+        wave += 1
         maxEnemyHealts = 11
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
         iterator = -1
-    elif len(enemies) == 0 and level == 4:
-        maxEnemyHealts = 30
+    elif len(enemies) == 0 and wave == 4:
+        maxEnemyHealts = 40
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
-        level += 1
+        wave += 1
         iterator = -1
-    elif len(enemies) == 0 and level == 5:
-        level = "Victory!"
+    elif len(enemies) == 0 and wave == 5:
+        wave = "Victory!"
         print("You win!")
         done = True
     #--------------------------
