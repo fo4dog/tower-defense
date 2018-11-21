@@ -153,6 +153,7 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
 healths = 3
 money = 600
 wave = 1
+victoryFlag = False
 
 isUpgradesIsDrawing = False #if this variable is true, upgrade/delete icons is drawing under turret
 upgradeCoords = [0, 0] #coordinates of upgrade icon
@@ -445,6 +446,7 @@ while not done:
     elif len(enemies) == 0 and wave == 5:
         wave = "Victory!"
         print("You win!")
+        victoryFlag = True
         done = True
     #--------------------------
     pygame.display.flip()
@@ -452,192 +454,206 @@ while not done:
 
 #--------------------------
 #fireworks section
-colors = [GREEN, RED, YELLOW, BLUE]
-firework = []
-firework2 = []
-firework3 = []
-firework4 = []
-firework5 = []
-firework6 = []
+if victoryFlag == True:
+    colors = [GREEN, RED, YELLOW, BLUE]
+    firework = []
+    firework2 = []
+    firework3 = []
+    firework4 = []
+    firework5 = []
+    firework6 = []
 
-flying = 0
+    flying = 0
 
-for i in range(0, 8):
-    firework.append(FireworkPart(100, 500, random.choice(colors)))
-    firework2.append(FireworkPart(200, 500, random.choice(colors)))
-    firework3.append(FireworkPart(300, 500, random.choice(colors)))
-    firework4.append(FireworkPart(400, 500, random.choice(colors)))
-    firework5.append(FireworkPart(500, 500, random.choice(colors)))
-    firework6.append(FireworkPart(600, 500, random.choice(colors)))
+    for i in range(0, 8):
+        firework.append(FireworkPart(100, 500, random.choice(colors)))
+        firework2.append(FireworkPart(200, 500, random.choice(colors)))
+        firework3.append(FireworkPart(300, 500, random.choice(colors)))
+        firework4.append(FireworkPart(400, 500, random.choice(colors)))
+        firework5.append(FireworkPart(500, 500, random.choice(colors)))
+        firework6.append(FireworkPart(600, 500, random.choice(colors)))
 
-done = False
+    done = False
 
-section = 1
-while not done:
-    for i in pygame.event.get():
-        if i.type == pygame.QUIT: done = True
+    section = 1
+    while not done:
+        for i in pygame.event.get():
+            if i.type == pygame.QUIT: done = True
 
-    
-    screen.fill((0, 0, 0))
-
-    #section 1:creating
-    if section == 1:
-        xRand = random.randint(20, screen_width-20)
-        for i in firework:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-
-        xRand = random.randint(20, screen_width-20)
-        for i in firework2:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-
-        xRand = random.randint(20, screen_width-20)
-        for i in firework3:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-
-        xRand = random.randint(20, screen_width-20)
-        for i in firework4:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-
-        xRand = random.randint(20, screen_width-20)
-        for i in firework5:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-
-        xRand = random.randint(20, screen_width-20)
-        for i in firework6:
-            i.x = xRand
-            i.y = 500
-            i.color = random.choice(colors)
-            
-        section = 2
         
-    #section 2:flying up
-    if section == 2:
-        if flying < 60:
+        screen.fill((0, 0, 0))
+
+        #section 1:creating
+        if section == 1:
+            xRand = random.randint(20, screen_width-20)
             for i in firework:
-                i.move(0, -5)
-                
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+
+            xRand = random.randint(20, screen_width-20)
             for i in firework2:
-                i.move(0, -5)
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+
+            xRand = random.randint(20, screen_width-20)
+            for i in firework3:
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+
+            xRand = random.randint(20, screen_width-20)
+            for i in firework4:
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+
+            xRand = random.randint(20, screen_width-20)
+            for i in firework5:
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+
+            xRand = random.randint(20, screen_width-20)
+            for i in firework6:
+                i.x = xRand
+                i.y = 500
+                i.color = random.choice(colors)
+                
+            section = 2
+            
+        #section 2:flying up
+        if section == 2:
+            if flying < 60:
+                for i in firework:
+                    i.move(0, -5)
+                    
+                for i in firework2:
+                    i.move(0, -5)
+
+                for i in firework3:
+                    i.move(0, -5)
+
+                for i in firework4:
+                    i.move(0, -5)
+
+                for i in firework5:
+                    i.move(0, -5)
+
+                for i in firework6:
+                    i.move(0, -5)
+                    
+                flying += 1
+            else:
+                flying = 0
+                section = 3
+        #section 3:blowing
+        if section == 3:
+            if flying < 50:
+                firework[0].move(1, -1)
+                firework[1].move(1, 0)
+                firework[2].move(1, 1)
+                firework[3].move(0, 1)
+                firework[4].move(-1, 1)
+                firework[5].move(-1, 0)
+                firework[6].move(-1, -1)
+                firework[7].move(0, -1)
+
+                firework2[0].move(1, -1)
+                firework2[1].move(1, 0)
+                firework2[2].move(1, 1)
+                firework2[3].move(0, 1)
+                firework2[4].move(-1, 1)
+                firework2[5].move(-1, 0)
+                firework2[6].move(-1, -1)
+                firework2[7].move(0, -1)
+
+                firework3[0].move(1, -1)
+                firework3[1].move(1, 0)
+                firework3[2].move(1, 1)
+                firework3[3].move(0, 1)
+                firework3[4].move(-1, 1)
+                firework3[5].move(-1, 0)
+                firework3[6].move(-1, -1)
+                firework3[7].move(0, -1)
+
+                firework4[0].move(1, -1)
+                firework4[1].move(1, 0)
+                firework4[2].move(1, 1)
+                firework4[3].move(0, 1)
+                firework4[4].move(-1, 1)
+                firework4[5].move(-1, 0)
+                firework4[6].move(-1, -1)
+                firework4[7].move(0, -1)
+
+                firework5[0].move(1, -1)
+                firework5[1].move(1, 0)
+                firework5[2].move(1, 1)
+                firework5[3].move(0, 1)
+                firework5[4].move(-1, 1)
+                firework5[5].move(-1, 0)
+                firework5[6].move(-1, -1)
+                firework5[7].move(0, -1)
+
+                firework6[0].move(1, -1)
+                firework6[1].move(1, 0)
+                firework6[2].move(1, 1)
+                firework6[3].move(0, 1)
+                firework6[4].move(-1, 1)
+                firework6[5].move(-1, 0)
+                firework6[6].move(-1, -1)
+                firework6[7].move(0, -1)
+                
+                flying += 1
+            else:
+                flying = 0
+                section = 4
+        #section 4:invisible
+        if section == 4:
+            if flying < 10:
+                flying += 1
+            else:
+                flying = 0
+                section = 1
+        #drawing
+        if section != 4 and section != 1:
+            for i in firework:
+                i.draw()
+
+            for i in firework2:
+                i.draw()
 
             for i in firework3:
-                i.move(0, -5)
+                i.draw()
 
             for i in firework4:
-                i.move(0, -5)
+                i.draw()
 
             for i in firework5:
-                i.move(0, -5)
+                i.draw()
 
             for i in firework6:
-                i.move(0, -5)
-                
-            flying += 1
-        else:
-            flying = 0
-            section = 3
-    #section 3:blowing
-    if section == 3:
-        if flying < 50:
-            firework[0].move(1, -1)
-            firework[1].move(1, 0)
-            firework[2].move(1, 1)
-            firework[3].move(0, 1)
-            firework[4].move(-1, 1)
-            firework[5].move(-1, 0)
-            firework[6].move(-1, -1)
-            firework[7].move(0, -1)
-
-            firework2[0].move(1, -1)
-            firework2[1].move(1, 0)
-            firework2[2].move(1, 1)
-            firework2[3].move(0, 1)
-            firework2[4].move(-1, 1)
-            firework2[5].move(-1, 0)
-            firework2[6].move(-1, -1)
-            firework2[7].move(0, -1)
-
-            firework3[0].move(1, -1)
-            firework3[1].move(1, 0)
-            firework3[2].move(1, 1)
-            firework3[3].move(0, 1)
-            firework3[4].move(-1, 1)
-            firework3[5].move(-1, 0)
-            firework3[6].move(-1, -1)
-            firework3[7].move(0, -1)
-
-            firework4[0].move(1, -1)
-            firework4[1].move(1, 0)
-            firework4[2].move(1, 1)
-            firework4[3].move(0, 1)
-            firework4[4].move(-1, 1)
-            firework4[5].move(-1, 0)
-            firework4[6].move(-1, -1)
-            firework4[7].move(0, -1)
-
-            firework5[0].move(1, -1)
-            firework5[1].move(1, 0)
-            firework5[2].move(1, 1)
-            firework5[3].move(0, 1)
-            firework5[4].move(-1, 1)
-            firework5[5].move(-1, 0)
-            firework5[6].move(-1, -1)
-            firework5[7].move(0, -1)
-
-            firework6[0].move(1, -1)
-            firework6[1].move(1, 0)
-            firework6[2].move(1, 1)
-            firework6[3].move(0, 1)
-            firework6[4].move(-1, 1)
-            firework6[5].move(-1, 0)
-            firework6[6].move(-1, -1)
-            firework6[7].move(0, -1)
-            
-            flying += 1
-        else:
-            flying = 0
-            section = 4
-    #section 4:invisible
-    if section == 4:
-        if flying < 10:
-            flying += 1
-        else:
-            flying = 0
-            section = 1
-    #drawing
-    if section != 4 and section != 1:
-        for i in firework:
-            i.draw()
-
-        for i in firework2:
-            i.draw()
-
-        for i in firework3:
-            i.draw()
-
-        for i in firework4:
-            i.draw()
-
-        for i in firework5:
-            i.draw()
-
-        for i in firework6:
-            i.draw()
-    #end
+                i.draw()
+        #end
+        f2 = pygame.font.Font(None, 100)
+        description2 = f2.render('VICTORY!', 1, WHITE)
+        screen.blit(description2, (300, 80))
+        pygame.display.flip()
+        clock.tick(60)
+else:
+    screen.fill(BLACK)
+    
     f2 = pygame.font.Font(None, 100)
-    description2 = f2.render('VICTORY!', 1, WHITE)
-    screen.blit(description2, (300, 80))
+    description2 = f2.render('DEFEAT...', 1, WHITE)
+    screen.blit(description2, (300, 400))
     pygame.display.flip()
     clock.tick(60)
+
+    done = False
+    while not done:
+        for i in pygame.event.get():
+            if i.type == pygame.QUIT: done = True
 #--------------------------
 
 pygame.quit()
