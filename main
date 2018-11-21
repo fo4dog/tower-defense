@@ -209,7 +209,7 @@ for y in range(0, 16):
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
 #--------------------------
 #game cycle
-done = True
+done = False
 
 while not done:
     for i in pygame.event.get():
