@@ -402,10 +402,10 @@ while not done:
     moneyValue = f1.render('Money: '+ str(money), 1, WHITE)
     screen.blit(moneyValue, (0, 0))
 
-    waveValue = f1.render('wave: '+ str(wave), 1, WHITE)
+    waveValue = f1.render('Wave: '+ str(wave), 1, WHITE)
     screen.blit(waveValue, (200, 0))
 
-    healthsValue = f1.render('healths: '+ str(healths), 1, WHITE)
+    healthsValue = f1.render('Healths: '+ str(healths), 1, WHITE)
     screen.blit(healthsValue, (400, 0))
     #--------------------------
     #healths and timer
