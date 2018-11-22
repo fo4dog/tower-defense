@@ -26,7 +26,21 @@ class FireworkPart:
         self.y += dy
 
     def draw(self):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, 10, 10))        
+        pygame.draw.rect(screen, self.color, (self.x, self.y, 10, 10))
+
+
+class Drop():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self):
+        pygame.draw. circle(screen, WHITE, (int(self.x), int(self.y)), 10)
+
+    def move(self):
+        self.x -= 1
+        self.y += 1
+        
 #--------------------------
 #technical variables
 pygame.init()
@@ -96,6 +110,8 @@ while not menuDone:
     screen.fill(BLACK)
         
     if menuSection == 1:
+        #--------------------------
+        #draw lamp
         pygame.draw.rect(screen, WHITE, (screen_width/15, -1, screen_width/60, screen_height/7*2), 2)
 
         if 1 <= tickL <= 50:
@@ -103,7 +119,23 @@ while not menuDone:
         
         pygame.draw.circle(screen, YELLOW, (screen_width//15 + 9, screen_height//7*2 + side_y), (side_x//4))
         pygame.draw.polygon(screen, WHITE, [[screen_width/15, screen_height/7*2], [screen_width/15 + screen_width/60, screen_height/7*2], [screen_width/15 + screen_width/60+side_x//2 + 10, screen_height//7*2 + side_y], [screen_width/15 + screen_width/60-side_x, screen_height//7*2 + side_y]])
-    
+        #--------------------------
+        #draw window
+        drops = []
+        if tickL % random.randint(5, 10) == 0:
+            for i in drops:
+                drops.remove(i)
+            for i in range(0, 5):
+                drops.append(Drop(random.randint(screen_width//10*9-50 + 10, screen_width//10*9-50 + screen_height // 7 - 10), random.randint(screen_height // 7 + 10, screen_height // 7 * 2 - 10)))
+
+        for i in drops:
+            i.move()
+            i.draw()
+        
+        pygame.draw.rect(screen, WHITE, (screen_width//10*9-50, screen_height / 7, screen_height / 7, screen_height / 7), 5)
+        pygame.draw.rect(screen, WHITE, ((screen_width//10*9-50) + (screen_height / 7 // 9 * 4), screen_height / 7, screen_height / 7 // 9, screen_height / 7))
+        pygame.draw.rect(screen, WHITE, (screen_width//10*9-50, screen_height / 7 + screen_height / 7 // 9 * 2, screen_height / 7, screen_height / 7 // 9))
+        #--------------------------
         
         htpText = f2.render("WORLD IN WAR", 1, RED)
         screen.blit(htpText, (screen_width / 5 + 50, 20))
@@ -119,6 +151,9 @@ while not menuDone:
         pygame.draw.rect(screen, WHITE, (screen_width / 5, screen_height / 7 * 5, screen_width / 5 * 3, screen_height / 7), 2)
         exitText = f2.render("EXIT", 1, WHITE)
         screen.blit(exitText, (screen_width / 5 * 2, screen_width / 7 * 4 + 25))
+
+        pleaseText = f1.render("Please turn on the sound", 1, WHITE)
+        screen.blit(pleaseText, (screen_width / 5 * 3, screen_width / 7 * 5 + 50))
 
         pygame.display.flip()
 
@@ -624,7 +659,7 @@ while not done:
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
         iterator = -1
     elif len(enemies) == 0 and wave == 4:
-        maxEnemyHealts = 40
+        maxEnemyHealts = 50
         enemies.append(Enemy(start[0], start[1], maxEnemyHealts, 0))
         wave += 1
         iterator = -1
