@@ -38,6 +38,7 @@ side_x = screen_width // 20
 side_y = screen_height // 16
 
 f1 = pygame.font.Font(None, 36)
+f2 = pygame.font.Font(None, 100)
 
 size = [screen_width, screen_height]
 screen = pygame.display.set_mode(size)
@@ -52,85 +53,129 @@ RED = [255, 0, 0]
 YELLOW = [247, 242, 26]
 BLUE = [135, 206, 250]
 
-screen.fill((0,250,154))
+screen.fill(BLACK)
 
-flag = False
+flag = False 
+done = False #for main cycle
 
 fakeTimer = 60 #with this timer we can drag icons without lags
+
 #--------------------------
-#description
-description1 = f1.render('Uhh, hello? You are playing in Tower Defense 1.0', 1, WHITE)
-screen.blit(description1, (100, 100))
+#menu
+menuSection = 1 #1 - main menu 2 - how to play
 
-description1 = f1.render('GREEN SQUARE- FIELD', 1, GREEN)
-screen.blit(description1, (100 + side_x, 150))
-pygame.draw.rect(screen, GREEN, (100, 150, side_x, side_y))
+menuDone = False
+done = False #flag for main game cycle
+victoryFlag = 0
 
-description1 = f1.render('GRAY SQUARE- ROAD FOR ENEMIES', 1, GRAY)
-screen.blit(description1, (100 + side_x, 200))
-pygame.draw.rect(screen, GRAY, (100, 200, side_x, side_y))
-
-description1 = f1.render('BLACK SQUARE- PLACE FOR TURRETS', 1, BLACK)
-screen.blit(description1, (100 + side_x, 250))
-pygame.draw.rect(screen, BLACK, (100, 250, side_x, side_y))
-
-description1 = f1.render('RED SQUARE- START', 1, RED)
-screen.blit(description1, (100 + side_x, 300))
-pygame.draw.rect(screen, RED, (100, 300, side_x, side_y))
-
-description1 = f1.render('RED SQUARE- FINISH', 1, YELLOW)
-screen.blit(description1, (100 + side_x, 350))
-pygame.draw.rect(screen, YELLOW, (100, 350, side_x, side_y))
-
-description1 = f1.render('WHITE CIRCLE- TURRET', 1, WHITE)
-screen.blit(description1, (100 + side_x, 410))
-pygame.draw.circle(screen, WHITE, (100 + side_x//2, 400 + (side_y//2)), (side_x//2), 2)
-
-description1 = f1.render('YELLOW CIRCLE- TURRET TOO))', 1, YELLOW)
-screen.blit(description1, (100 + side_x, 470))
-pygame.draw.circle(screen, YELLOW, (100 + side_x//2, 460 + (side_y//2)), (side_x//2), 2)
-
-pygame.display.flip()
-
-while not flag:
+while not menuDone:
     for i in pygame.event.get():
         if i.type == pygame.MOUSEBUTTONUP:
-            flag = True
+            pos = pygame.mouse.get_pos()
 
-screen.fill((0,250,154))
+            if screen_width / 5 <= pos[0] <= screen_width / 5 + screen_width / 5 * 3 and screen_height / 7 <= pos[1] <= screen_height / 7 + screen_height / 7 and menuSection == 1:
+                menuDone = True
+            elif screen_width / 5 <= pos[0] <= screen_width / 5 + screen_width / 5 * 3 and screen_height / 7 * 3 <= pos[1] <= screen_height / 7 * 3 + screen_height / 7 and menuSection == 1:
+                menuSection = 2
+            elif screen_width / 5 <= pos[0] <= screen_width / 5 + screen_width / 5 * 3 and screen_height / 7 * 5 <= pos[1] <= screen_height / 7 * 5 + screen_height / 7 and menuSection == 1:
+                done = True
+                menuDone = True
+                victoryFlag = 2
 
-description1 = f1.render('Now a little about the gameplay:', 1, WHITE)
-screen.blit(description1, (10, 100))
+    screen.fill(BLACK)
+        
+    if menuSection == 1:
+        pygame.draw.rect(screen, WHITE, (screen_width / 5, screen_height / 7, screen_width / 5 * 3, screen_height / 7), 2)
+        playText = f2.render("PLAY", 1, WHITE)
+        screen.blit(playText, (screen_width / 5 * 2, screen_width / 7))
+        
+        pygame.draw.rect(screen, WHITE, (screen_width / 5, screen_height / 7 * 3, screen_width / 5 * 3, screen_height / 7), 2)
+        htpText = f2.render("HOW TO PLAY", 1, WHITE)
+        screen.blit(htpText, (screen_width / 5 + 50, screen_width / 7 * 2 +85))
+        
+        pygame.draw.rect(screen, WHITE, (screen_width / 5, screen_height / 7 * 5, screen_width / 5 * 3, screen_height / 7), 2)
+        exitText = f2.render("EXIT", 1, WHITE)
+        screen.blit(exitText, (screen_width / 5 * 2, screen_width / 7 * 4 + 25))
 
-description1 = f1.render('To put a turret - click on it and drag it into place for the turret', 1, GREEN)
-screen.blit(description1, (10, 150))
+        pygame.display.flip()
+        
+    elif menuSection == 2:
+        screen.fill(BLACK)
+        flag = False
+        
+        description1 = f1.render('Uhh, hello? You are playing in Tower Defense 1.0', 1, WHITE)
+        screen.blit(description1, (100, 100))
 
-description1 = f1.render('To upgrade or remove turret - click on the turret', 1, GRAY)
-screen.blit(description1, (10, 200))
+        description1 = f1.render('GREEN SQUARE- FIELD', 1, GREEN)
+        screen.blit(description1, (100 + side_x, 150 + 10))
+        pygame.draw.rect(screen, GREEN, (100, 150, side_x, side_y))
 
-description1 = f1.render('If you do not have enough money - click on the upgrade icon, nothing will happen', 1, BLACK)
-screen.blit(description1, (10, 250))
+        description1 = f1.render('GRAY SQUARE- ROAD FOR ENEMIES', 1, GRAY)
+        screen.blit(description1, (100 + side_x, 200 + 10))
+        pygame.draw.rect(screen, GRAY, (100, 200, side_x, side_y))
 
-description1 = f1.render('The cost of the turret is 300 coins, upgrade - 500 coins. Upgrade gives + to damage', 1, RED)
-screen.blit(description1, (10, 300))
+        description1 = f1.render('BLACK SQUARE- PLACE FOR TURRETS', 1, WHITE)
+        screen.blit(description1, (100 + side_x, 250 + 10))
+        pygame.draw.rect(screen, WHITE, (100, 250, side_x, side_y))
 
-description1 = f1.render('White turret shoots at one enemy, but has high damage', 1, YELLOW)
-screen.blit(description1, (10, 350))
+        description1 = f1.render('RED SQUARE- START', 1, RED)
+        screen.blit(description1, (100 + side_x, 300 + 10))
+        pygame.draw.rect(screen, RED, (100, 300, side_x, side_y))
 
-description1 = f1.render('The yellow turret shoots all enemies in its field of view, but has little damage', 1, YELLOW)
-screen.blit(description1, (10, 400))
+        description1 = f1.render('RED SQUARE- FINISH', 1, YELLOW)
+        screen.blit(description1, (100 + side_x, 350 + 10))
+        pygame.draw.rect(screen, YELLOW, (100, 350, side_x, side_y))
 
-description1 = f1.render('Four waves and final boss. Good luck :)', 1, YELLOW)
-screen.blit(description1, (10, 450))
+        description1 = f1.render('WHITE CIRCLE- TURRET', 1, WHITE)
+        screen.blit(description1, (100 + side_x, 410))
+        pygame.draw.circle(screen, WHITE, (100 + side_x//2, 400 + (side_y//2)), (side_x//2), 2)
 
-pygame.display.flip()
+        description1 = f1.render('YELLOW CIRCLE- TURRET TOO))', 1, YELLOW)
+        screen.blit(description1, (100 + side_x, 470))
+        pygame.draw.circle(screen, YELLOW, (100 + side_x//2, 460 + (side_y//2)), (side_x//2), 2)
 
-flag = False
-while not flag:
-    for i in pygame.event.get():
-        if i.type == pygame.MOUSEBUTTONUP:
-            flag = True
+        pygame.display.flip()
 
+        while not flag:
+            for i in pygame.event.get():
+                if i.type == pygame.MOUSEBUTTONUP:
+                    flag = True
+
+        screen.fill(BLACK)
+
+        description1 = f1.render('Now a little about the gameplay:', 1, WHITE)
+        screen.blit(description1, (10, 100))
+
+        description1 = f1.render('To put a turret - click on it and drag it into place for the turret', 1, GREEN)
+        screen.blit(description1, (10, 150))
+
+        description1 = f1.render('To upgrade or remove turret - click on the turret', 1, GRAY)
+        screen.blit(description1, (10, 200))
+
+        description1 = f1.render('If you do not have enough money - click on the upgrade icon, nothing will happen', 1, WHITE)
+        screen.blit(description1, (10, 250))
+
+        description1 = f1.render('The cost of the turret is 300 coins, upgrade - 500 coins. Upgrade gives + to damage', 1, RED)
+        screen.blit(description1, (10, 300))
+
+        description1 = f1.render('White turret shoots at one enemy, but has high damage', 1, YELLOW)
+        screen.blit(description1, (10, 350))
+
+        description1 = f1.render('The yellow turret shoots all enemies in its field of view, but has little damage', 1, YELLOW)
+        screen.blit(description1, (10, 400))
+
+        description1 = f1.render('Four waves and final boss. Good luck :)', 1, YELLOW)
+        screen.blit(description1, (10, 450))
+
+        pygame.display.flip()
+
+        flag = False
+        while not flag:
+            for i in pygame.event.get():
+                if i.type == pygame.MOUSEBUTTONUP:
+                    flag = True
+
+        menuSection = 1
 #--------------------------
 #game variables
 field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
@@ -153,7 +198,6 @@ field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
 healths = 3
 money = 600
 wave = 1
-victoryFlag = False
 
 isUpgradesIsDrawing = False #if this variable is true, upgrade/delete icons is drawing under turret
 upgradeCoords = [0, 0] #coordinates of upgrade icon
@@ -210,7 +254,6 @@ for y in range(0, 16):
             pygame.draw.rect(screen, colorr, (x*side_x, y*side_y, side_x, side_y))
 #--------------------------
 #game cycle
-done = False
 
 while not done:
     for i in pygame.event.get():
@@ -411,6 +454,7 @@ while not done:
     #healths and timer
     if healths <= 0:
         done = True
+        victoryFlag = 0
         print("You lose")
 
         
@@ -446,7 +490,7 @@ while not done:
     elif len(enemies) == 0 and wave == 5:
         wave = "Victory!"
         print("You win!")
-        victoryFlag = True
+        victoryFlag = 1
         done = True
     #--------------------------
     pygame.display.flip()
@@ -454,7 +498,7 @@ while not done:
 
 #--------------------------
 #fireworks section
-if victoryFlag == True:
+if victoryFlag == 1:
     colors = [GREEN, RED, YELLOW, BLUE]
     firework = []
     firework2 = []
@@ -636,12 +680,12 @@ if victoryFlag == True:
             for i in firework6:
                 i.draw()
         #end
-        f2 = pygame.font.Font(None, 100)
+        
         description2 = f2.render('VICTORY!', 1, WHITE)
         screen.blit(description2, (300, 80))
         pygame.display.flip()
         clock.tick(60)
-else:
+elif victoryFlag == 0:
     screen.fill(BLACK)
     
     f2 = pygame.font.Font(None, 100)
