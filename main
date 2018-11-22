@@ -37,6 +37,7 @@ menuMusic.play(-1)
 
 clock = pygame.time.Clock()
 
+
 screen_height = 800
 screen_width = 1000
 
@@ -75,6 +76,8 @@ menuDone = False
 done = False #flag for main game cycle
 victoryFlag = 0
 
+tickL = 0
+
 while not menuDone:
     for i in pygame.event.get():
         if i.type == pygame.MOUSEBUTTONUP:
@@ -93,6 +96,15 @@ while not menuDone:
     screen.fill(BLACK)
         
     if menuSection == 1:
+        pygame.draw.rect(screen, WHITE, (screen_width/15, -1, screen_width/60, screen_height/7*2), 2)
+
+        if 1 <= tickL <= 50:
+            pygame.draw.polygon(screen, YELLOW, [[screen_width/15 + screen_width/60-side_x, screen_height//7*2 + side_y], [screen_width/15 + screen_width/60+side_x//2 + 10, screen_height//7*2 + side_y], [screen_width//10+67, screen_width//7*3], [0, screen_width//7*3]])
+        
+        pygame.draw.circle(screen, YELLOW, (screen_width//15 + 9, screen_height//7*2 + side_y), (side_x//4))
+        pygame.draw.polygon(screen, WHITE, [[screen_width/15, screen_height/7*2], [screen_width/15 + screen_width/60, screen_height/7*2], [screen_width/15 + screen_width/60+side_x//2 + 10, screen_height//7*2 + side_y], [screen_width/15 + screen_width/60-side_x, screen_height//7*2 + side_y]])
+    
+        
         htpText = f2.render("WORLD IN WAR", 1, RED)
         screen.blit(htpText, (screen_width / 5 + 50, 20))
         
@@ -109,7 +121,11 @@ while not menuDone:
         screen.blit(exitText, (screen_width / 5 * 2, screen_width / 7 * 4 + 25))
 
         pygame.display.flip()
-        
+
+        if tickL == 500:
+            tickL = 0
+        else:
+            tickL += 1
     elif menuSection == 2:
         screen.fill(BLACK)
         flag = False
