@@ -48,6 +48,7 @@ pygame.display.set_caption("Tower Defense 1.0")
 BLACK = [0, 0, 0]
 WHITE = [255, 255, 255]
 GREEN = [32, 58, 39]
+GREEN_MATRIX = [0, 128, 0]
 GRAY = [128, 128, 128]
 RED = [255, 0, 0]
 YELLOW = [247, 242, 26]
@@ -85,6 +86,9 @@ while not menuDone:
     screen.fill(BLACK)
         
     if menuSection == 1:
+        htpText = f2.render("WORLD IN WAR", 1, RED)
+        screen.blit(htpText, (screen_width / 5 + 50, 20))
+        
         pygame.draw.rect(screen, WHITE, (screen_width / 5, screen_height / 7, screen_width / 5 * 3, screen_height / 7), 2)
         playText = f2.render("PLAY", 1, WHITE)
         screen.blit(playText, (screen_width / 5 * 2, screen_width / 7))
@@ -176,6 +180,117 @@ while not menuDone:
                     flag = True
 
         menuSection = 1
+#--------------------------
+#history and dialogue section
+screen.fill(BLACK)
+
+#--------------------------
+#history
+description1 = f1.render('1950. The whole world plunged into war', 1, GREEN_MATRIX)
+screen.blit(description1, (250, 100))
+
+description1 = f1.render('You are the commander of a military unit.', 1, GREEN_MATRIX)
+screen.blit(description1, (250, 200))
+
+description1 = f1.render('Your country has already been attacked', 1, GREEN_MATRIX)
+screen.blit(description1, (250, 300))
+
+description1 = f1.render('You can be attacked at any time.', 1, GREEN_MATRIX)
+screen.blit(description1, (250, 400))
+
+description1 = f1.render('You heard something', 1, GREEN_MATRIX)
+screen.blit(description1, (250, 500))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+#--------------------------
+screen.fill(BLACK)
+
+description1 = f1.render('Call from base', 1, GREEN_MATRIX)
+screen.blit(description1, (100, 100))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('You: Yes, General?', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 150 + 10))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('General: Enemies are approaching your military unit,', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 200 + 10))
+description1 = f1.render('do not let them take what belongs to you', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x + 50, 200 + 50))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('You: But...', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 300 + 10))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('General: Without "but"!', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 350 + 10))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('You: But we only have two types of turrets', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 400 + 10))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('General: You must protect the base', 1, GREEN_MATRIX)
+screen.blit(description1, (100 + side_x, 450))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
+
+description1 = f1.render('The call ended. You looked out the window and saw', 1, GREEN_MATRIX)
+screen.blit(description1, (100, 500))
+pygame.display.flip()
+
+flag = False
+while not flag:
+    for i in pygame.event.get():
+        if i.type == pygame.MOUSEBUTTONUP:
+            flag = True
 #--------------------------
 #game variables
 field = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4],
@@ -382,6 +497,7 @@ while not done:
                         healths = 0
                     else:
                         healths -= 1
+                        enemies.remove(i)
     
         for i in turrets:
             pygame.draw.circle(screen, i[3], (i[0]*side_x + (side_x//2), i[1]*side_y + (side_y//2)), (side_x//2), 1)
@@ -499,7 +615,7 @@ while not done:
 #--------------------------
 #fireworks section
 if victoryFlag == 1:
-    colors = [GREEN, RED, YELLOW, BLUE]
+    colors = [GREEN_MATRIX, RED, YELLOW, BLUE]
     firework = []
     firework2 = []
     firework3 = []
